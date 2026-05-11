@@ -17,11 +17,11 @@ def reset_bad_game():
 st.sidebar.title("🛠 UI Laboratory")
 mode = st.sidebar.radio(
     "体験するモードを選択してください",
-    ("地獄の BAD UI (特訓モード)", "天国の GOOD UI (体験モード)")
+    ("BAD UI", "GOOD UI")
 )
 
 # --- 項目1: BAD UI (ワープする・バツが小さい・文字が怪しい) ---
-if mode == "地獄の BAD UI (特訓モード)":
+if mode == "BAD UI":
     st.title("BAD UI ゲーム")
     st.write("ユーザーを欺き、ストレスを与え、誤クリックを誘発する最悪の体験です。")
 
@@ -73,7 +73,7 @@ if mode == "地獄の BAD UI (特訓モード)":
         st.rerun()
 
 # --- 項目2: GOOD UI (明確・予測可能・安心) ---
-elif mode == "天国の GOOD UI (体験モード)":
+elif mode == "GOOD UI":
     st.title("✅ GOOD UI ")
     st.write("ユーザーの目的を尊重し、安心感とスムーズな操作を提供する誠実な体験です。")
 
