@@ -16,12 +16,12 @@ def reset_game():
 st.sidebar.title("🧪 UI Laboratory")
 mode = st.sidebar.radio(
     "どちらのゲームをプレイしますか？",
-    ("👹 地獄の BAD UI ゲーム", "✨ 天国の GOOD UI ゲーム")
+    ("地獄の BAD UI ゲーム", "天国の GOOD UI ゲーム")
 )
 
 # --- モード1: BAD UI ゲーム (ストレス特訓) ---
-if mode == "👹 地獄の BAD UI ゲーム":
-    st.title("👹 地獄の BAD UI 特訓")
+if mode == "地獄の BAD UI ゲーム":
+    st.title("地獄の BAD UI 特訓")
     st.write("「小さすぎるバツ印」と「ワープする広告」に耐えられるか。")
 
     bad_code = f"""
@@ -59,8 +59,8 @@ if mode == "👹 地獄の BAD UI ゲーム":
     components.html(bad_code, height=620)
 
 # --- モード2: GOOD UI ゲーム (癒やし体験) ---
-elif mode == "✨ 天国の GOOD UI ゲーム":
-    st.title("✨ 天国の GOOD UI ゲーム")
+elif mode == "天国の GOOD UI ゲーム":
+    st.title("天国の GOOD UI ゲーム")
     st.write("「押しやすさ」を極めたデザイン。ターゲットは大きく、常にユーザーを尊重します。")
 
     good_code = f"""
