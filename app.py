@@ -16,12 +16,12 @@ def reset_game():
 st.sidebar.title("🧪 UI Laboratory")
 mode = st.sidebar.radio(
     "どちらのゲームをプレイしますか？",
-    ("地獄の BAD UI ゲーム", "天国の GOOD UI ゲーム")
+    ("👹 地獄の BAD UI ゲーム", "✨ 天国の GOOD UI ゲーム")
 )
 
 # --- モード1: BAD UI ゲーム (ストレス特訓) ---
-if mode == "地獄の BAD UI ゲーム":
-    st.title("地獄の BAD UI 特訓")
+if mode == "👹 地獄の BAD UI ゲーム":
+    st.title("👹 地獄の BAD UI 特訓")
     st.write("「小さすぎるバツ印」と「ワープする広告」に耐えられるか。")
 
     bad_code = f"""
@@ -30,14 +30,8 @@ if mode == "地獄の BAD UI ゲーム":
             <div style="padding:15px; text-align:center; font-family:sans-serif;">
                 <div style="background:#f00; color:#fff; display:inline-block; padding:2px 10px; font-weight:bold; margin-bottom:5px;">PR</div>
                 <h2 style="color:#1a73e8; margin:10px 0; font-size:20px;">【熊本限定】爆釣の聖地公開！？</h2>
-                <p style="font-size:12px; color:#555;">AIが解析した、今すぐ行くべき釣り場TOP10<br><span style="color:#d93025; font-weight:bold;">※公開終了まであと <span id="fake-timer">05</span> 秒</span></p>
-                <div style="width:100%; height:180px; background:#ddd; margin:15px 0; display:flex; align-items:center; justify-content:center; border:1px dashed #999;">
-                    <span style="font-size:32px;">▶️</span>
-                </div>
-                <div style="display:flex; justify-content:center; gap:10px;">
-                    <button style="padding:10px 15px; background:#eee; border:1px solid #ccc; cursor:pointer;">後で見る</button>
-                    <button id="s" style="padding:10px 15px; background:#1a73e8; color:#fff; border:none; font-weight:bold; cursor:pointer; border-radius:5px;">訓練開始</button>
-                </div>
+                <div style="width:100%; height:180px; background:#ddd; margin:15px 0; display:flex; align-items:center; justify-content:center; border:1px dashed #999;">▶️</div>
+                <button id="s" style="padding:10px 15px; background:#1a73e8; color:#fff; border:none; font-weight:bold; cursor:pointer; border-radius:5px;">訓練開始</button>
             </div>
             <div id="x" style="position:absolute; top:5px; right:5px; width:16px; height:16px; background:#ff4b4b; color:#fff; font-size:14px; font-weight:bold; line-height:16px; text-align:center; cursor:pointer; border-radius:2px; display:none; font-family:Arial,sans-serif;">×</div>
         </div>
@@ -65,9 +59,21 @@ if mode == "地獄の BAD UI ゲーム":
     components.html(bad_code, height=620)
 
 # --- モード2: GOOD UI ゲーム (癒やし体験) ---
+# 文字の被りを修正（パディング調整）、広告全体が穏やかに動くアニメーションを追加した修正版
 elif mode == "天国の GOOD UI ゲーム":
-    st.title("天国の GOOD UI ゲーム")
-    st.write("「押しやすさ」を極めたデザイン。ターゲットは大きく、誠実な広告が表示されます。")
+    st.title("✨ 天国の GOOD UI ゲーム")
+    st.write("「押しやすさ」を極めたデザイン。ターゲットは大きく、誠実な広告全体が穏やかに動き、常にユーザーを尊重します。")
+
+    # CSSアニメーション：広告全体をゆっくり動かします
+    move_ad_gently_keyframes = """
+    @keyframes moveAdGently {
+        0%   { left: 0%; top: 20px; } /* 左端、上端（バツのはみ出しを考慮） */
+        25%  { left: calc(100% - 320px); top: 20px; } /* 右端 */
+        50%  { left: calc(100% - 320px); top: calc(100% - 480px); } /* 右下 */
+        75%  { left: 0%; top: calc(100% - 480px); } /* 左下 */
+        100% { left: 0%; top: 20px; }
+    }
+    """
 
     good_code = f"""
     <div id="gf" style="position:relative; width:100%; height:550px; background:#e8f0fe; border:3px solid #1a73e8; border-radius:12px; overflow:hidden; user-select:none;">
@@ -75,56 +81,71 @@ elif mode == "天国の GOOD UI ゲーム":
             <span style="font-weight:bold;">SCORE: <span id="gs">0</span> | TIME: <span id="gt">30</span></span>
         </div>
         
-        <button id="gs-btn" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); padding:20px 40px; font-size:24px; background:#1a73e8; color:#fff; border:none; border-radius:50px; cursor:pointer; font-weight:bold; box-shadow:0 10px 20px rgba(26,115,232,0.3);">
+        <button id="gs-btn" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); padding:20px 40px; font-size:24px; background:#1a73e8; color:#fff; border:none; border-radius:50px; cursor:pointer; font-weight:bold; box-shadow:0 10px 20px rgba(26,115,232,0.3); z-index: 200;">
             ゲームを開始する
         </button>
 
-        <div id="ad-card-good" style="
+        <div id="moving-container-good" style="
             position: absolute;
             width: 320px;
             height: 480px;
-            background-color: #fff;
-            border: 4px solid #1a73e8;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            overflow: hidden;
-            display: none;
-            font-family: sans-serif;
+            user-select: none;
+            cursor: crosshair;
+            animation: moveAdGently 25s infinite linear running; /* Good UI用にゆっくり */
+            display: none; /* 開始まで非表示 */
+            z-index: 100;
         ">
-            <div style="padding:15px; text-align:center;">
-                <div style="background:#1a73e8; color:#fff; display:inline-block; padding:2px 10px; font-weight:bold; margin-bottom:5px;">PR</div>
-                <h2 id="ad-title-good" style="color:#1a73e8; margin:10px 0; font-size:20px;">【熊本限定】爆釣の聖地公開！？</h2>
-                <p id="ad-desc-good" style="font-size:12px; color:#555;">AIが解析した、今週末おすすめ釣り場TOP10。熊本の豊かな海と川の魅力をお届け。</p>
-                
-                <div id="ad-image-good" style="width:100%; height:180px; background:#ddd; margin:15px 0; display:flex; align-items:center; justify-content:center; border:1px dashed #1a73e8; border-radius: 5px;">
-                    <span style="font-size:32px;">▶️</span>
+            <div id="ad-card-good" style="
+                position: relative;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+                border: 4px solid #1a73e8;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                overflow: hidden;
+                font-family: sans-serif;
+                padding: 20px 80px 20px 20px; /* 文字が被らないように右側に余白を作る（80px） */
+            ">
+                <div style="padding:15px; text-align:center;">
+                    <div style="background:#1a73e8; color:#fff; display:inline-block; padding:2px 10px; font-weight:bold; margin-bottom:5px;">PR</div>
+                    <h2 id="ad-title-good" style="color:#1a73e8; margin:10px 0; font-size:20px;">【熊本限定】爆釣の聖地公開！？</h2>
+                    <p id="ad-desc-good" style="font-size:12px; color:#555;">AIが解析した、今週末おすすめ釣り場TOP10。熊本の豊かな海と川の魅力をお届け。</p>
+                    
+                    <div id="ad-image-good" style="width:100%; height:180px; background:#ddd; margin:15px 0; display:flex; align-items:center; justify-content:center; border:1px dashed #1a73e8; border-radius: 5px;">
+                        <span style="font-size:32px;">▶️</span>
+                    </div>
+
+                    <div style="display:flex; justify-content:center; gap:10px;">
+                        <button style="padding:10px 15px; background:#f0f2f6; border:1px solid #1a73e8; cursor:pointer; color: #1a73e8; border-radius: 5px;">後で見る</button>
+                        <button style="padding:10px 15px; background:#1a73e8; color:#fff; border:none; font-weight:bold; cursor:pointer; border-radius: 5px;">詳細をチェック</button>
+                    </div>
                 </div>
 
-                <div style="display:flex; justify-content:center; gap:10px;">
-                    <button style="padding:10px 15px; background:#f0f2f6; border:1px solid #1a73e8; cursor:pointer; color: #1a73e8; border-radius: 5px;">後で見る</button>
-                    <button style="padding:10px 15px; background:#1a73e8; color:#fff; border:none; font-weight:bold; cursor:pointer; border-radius: 5px;">詳細をチェック</button>
-                </div>
+                <div id="gtgt" style="
+                    position:absolute; width:80px; height:80px; background:#fff; color:#1a73e8; border:4px solid #1a73e8;
+                    border-radius:50%; display:flex; align-items:center; justify-content:center;
+                    font-size:36px; font-weight:bold; cursor:pointer;
+                    transition: transform 0.1s;
+                    box-shadow: 0 4px 15px rgba(26,115,232,0.2);
+                    right: -20px; top: -20px; /* 広告カードからはみ出して配置 */
+                    font-family: Arial, sans-serif;
+                    z-index: 10001;
+                ">×</div>
             </div>
-
-            <div id="gtgt" style="
-                position:absolute; width:80px; height:80px; background:#fff; color:#1a73e8; border:4px solid #1a73e8;
-                border-radius:50%; display:flex; align-items:center; justify-content:center;
-                font-size:36px; font-weight:bold; cursor:pointer;
-                transition: transform 0.1s;
-                box-shadow: 0 4px 15px rgba(26,115,232,0.2);
-                right: -20px; top: -20px; /* 広告コンテナからはみ出すように配置 */
-                font-family: Arial, sans-serif;
-                z-index: 10001;
-            ">×</div>
         </div>
         
-        <div id="nice" style="position:absolute; bottom:30px; width:100%; text-align:center; font-family:sans-serif; color:#1a73e8; font-size:24px; font-weight:bold; opacity:0; transition:0.3s; pointer-events:none;">Good Click!</div>
+        <div id="nice" style="position:absolute; bottom:30px; width:100%; text-align:center; font-family:sans-serif; color:#1a73e8; font-size:24px; font-weight:bold; opacity:0; transition:0.3s; pointer-events:none; z-index: 10;">Good Click!</div>
     </div>
+    <style>
+        /* CSSの波括弧を {{ }} に修正、アニメーションを追加 */
+        {move_ad_gently_keyframes}
+    </style>
     <script>
-        const gf=document.getElementById('gf'), gtgt=document.getElementById('gtgt'), gsb=document.getElementById('gs-btn'), gse=document.getElementById('gs'), gte=document.getElementById('gt'), ni=document.getElementById('nice'), adCardGood=document.getElementById('ad-card-good'), adTitleGood=document.getElementById('ad-title-good'), adDescGood=document.getElementById('ad-desc-good'), adImageGood=document.getElementById('ad-image-good');
+        const gf=document.getElementById('gf'), movingContainerGood=document.getElementById('moving-container-good'), adCardGood=document.getElementById('ad-card-good'), gtgt=document.getElementById('gtgt'), gsb=document.getElementById('gs-btn'), gse=document.getElementById('gs'), gte=document.getElementById('gt'), ni=document.getElementById('nice'), adTitleGood=document.getElementById('ad-title-good'), adDescGood=document.getElementById('ad-desc-good'), adImageGood=document.getElementById('ad-image-good');
         let gsc=0, gt=30, gI;
 
         // 釣り場情報の配列
@@ -145,8 +166,12 @@ elif mode == "天国の GOOD UI ゲーム":
         }}
 
         gsb.onclick=()=>{{
-            gsc=0; gt=30; gse.innerText=gsc; gte.innerText=gt; gsb.style.display='none'; adCardGood.style.display='block'; changeContent();
-            gI=setInterval(()=>{{ gt--; gte.innerText=gt; if(gt<=0){{ clearInterval(gI); adCardGood.style.display='none'; gsb.style.display='block'; gsb.innerText="終了:"+gsc+" (再挑戦)"; }} }},1000);
+            gsc=0; gt=30; gse.innerText=gsc; gte.innerText=gt; gsb.style.display='none'; 
+            movingContainerGood.style.display='block'; /* アニメーションさせる親コンテナを表示 */
+            changeContent();
+            gI=setInterval(()=>{{ gt--; gte.innerText=gt; if(gt<=0){{ clearInterval(gI); 
+            movingContainerGood.style.display='none'; /* 終了時に親コンテナを非表示 */
+            gsb.style.display='block'; gsb.innerText="終了:"+gsc+" (再挑戦)"; }} }},1000);
         }};
 
         // バツボタンクリック時の処理 (コンテンツ切り替え)
@@ -171,7 +196,6 @@ if st.button("🔄 ゲーム全体を完全リセット"):
 # 4. サイドバー下部の解説
 st.sidebar.markdown("---")
 st.sidebar.write("**【今回の改善点】**")
-st.sidebar.write("* バツ印を赤い四角の中に文字として配置しました。")
+st.sidebar.write("* バツ印を赤い四角の中に文字として配置しました（Bad UIモード）。")
 st.sidebar.write("* リセットボタンを独立させ、UUIDによる強制再読み込みを実装しました。")
-st.sidebar.write("* Good UI版は80pxの巨大ターゲットでストレスフリーです。")
-st.sidebar.write("* **天国の GOOD UI ゲームにも、誠実な広告を表示するようにしました。**")
+st.sidebar.write("* **Good UIモードで文字が隠れる問題を修正し、広告全体が穏やかに動くアニメーションを追加しました。**")
